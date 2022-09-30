@@ -116,6 +116,10 @@ import java.util.TreeSet;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Vector;
 
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.FS_DEFAULT_NAME_KEY;
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.FS_TRASH_INTERVAL_DEFAULT;
@@ -1821,10 +1825,35 @@ public class NameNode extends ReconfigurableBase implements
   protected String getNameServiceId(Configuration conf) {
     return DFSUtil.getNamenodeNameServiceId(conf);
   }
+
+  private static Iterator list(ClassLoader CL)
+          throws NoSuchFieldException, SecurityException,
+          IllegalArgumentException, IllegalAccessException {
+    Class CL_class = CL.getClass();
+    while (CL_class != java.lang.ClassLoader.class) {
+      CL_class = CL_class.getSuperclass();
+    }
+    java.lang.reflect.Field ClassLoader_classes_field = CL_class
+            .getDeclaredField("classes");
+    ClassLoader_classes_field.setAccessible(true);
+    Vector classes = (Vector) ClassLoader_classes_field.get(CL);
+    return classes.iterator();
+  }
   
   /**
    */
   public static void main(String argv[]) throws Exception {
+    //To print all the related classes loaded for this class
+    ClassLoader myCL = Thread.currentThread().getContextClassLoader();
+    while (myCL != null) {
+      System.out.println("ClassLoader: " + myCL);
+      for (Iterator iter = list(myCL); iter.hasNext();) {
+        System.out.println("\t" + iter.next());
+      }
+      myCL = myCL.getParent();
+    }
+
+
     if (DFSUtil.parseHelpArgument(argv, NameNode.USAGE, System.out, true)) {
       System.exit(0);
     }
