@@ -416,7 +416,7 @@
 <property>
   <name>dfs.namenode.name.dir</name>
   <!--<value>file://${hadoop.tmp.dir}/dfs/name</value>-->
-  <value>${project.basedir}/dfs/name</value>
+  <value>hadoop-hdfs/dfs/name</value>
   <description>Determines where on the local filesystem the DFS name node
       should store the name table(fsimage).  If this is a comma-delimited list
       of directories then the name table is replicated in all of the
@@ -612,7 +612,7 @@
 <property>
   <name>dfs.datanode.data.dir</name>
   <!--<value>file://${hadoop.tmp.dir}/dfs/data</value>-->
-  <value>${project.basedir}/dfs/data</value>
+  <value>hadoop-hdfs/dfs/data</value>
   <description>Determines where on the local filesystem an DFS data node
   should store its blocks.  If this is a comma-delimited
   list of directories, then data will be stored in all named
